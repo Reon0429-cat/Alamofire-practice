@@ -12,7 +12,13 @@ typealias ResultHandler<T> = (Result<T, APIError>) -> Void
 struct APIClient {
     
     func request(handler: @escaping ResultHandler<[Article]>) {
-        AF.request("https://qiita.com/api/v2/items")
+        let urlString = "https://qiita.com/api/v2/items"
+        let url = URL(string: urlString)
+        if url == nil {
+            handler(.failure(.invalidURL))
+            return
+        }
+        AF.request(urlString)
             .responseJSON { response in
                 guard let data = response.data else {
                     handler(.failure(.invalidResponse))
@@ -26,4 +32,5 @@ struct APIClient {
                 }
             }
     }
+    
 }

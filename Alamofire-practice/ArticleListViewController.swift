@@ -20,7 +20,11 @@ final class ArticleListViewController: UIViewController {
         
     }
     
-    private func getArticles() {
+}
+
+private extension ArticleListViewController {
+    
+    func getArticles() {
         APIClient().request { result in
             switch result {
                 case .success(let articles):
@@ -29,13 +33,20 @@ final class ArticleListViewController: UIViewController {
                         self.tableView.reloadData()
                     }
                 case .failure(let error):
-                    fatalError("\(error)")
+                    self.showAPIAlert(error: error)
             }
         }
     }
     
+    func showAPIAlert(error: APIError) {
+        let alert = UIAlertController(title: error.title, message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "閉じる", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
 }
 
+// MARK: - UITableViewDataSource
 extension ArticleListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
